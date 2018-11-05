@@ -20,6 +20,22 @@ knitr::opts_chunk$set(echo = TRUE)
 3. Create one more plot using this data. Work with your group to create a plot that follows the principles of good plotting and that you think illustrates something interesting in the data. Write a paragraph explaining what the plot is showing and why you find it interesting.
        ####Grant Will Do this####
 *******************************************************************************
+## Libraries
 
-Testing closing issue now again
+```{r libraries, message=FALSE, warning=FALSE}
+library(readr)
+
+```
+
+
+## Load Data
+
+```{r data}
+homicides <- read_csv('data/homicide-data.csv')
+
+```
+
+
+
+
 
