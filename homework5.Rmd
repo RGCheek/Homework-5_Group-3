@@ -1,10 +1,6 @@
 ---
 title: "Homework5"
-<<<<<<< HEAD
-author: "Grant Erlandson"
-=======
-author: "Aeriel Belk, Rebecca, Grant"
->>>>>>> 4cfb53ce42b7170137c7268e7f57f6e27dbfb8f0
+author: "Aeriel Belk"
 date: "11/5/2018"
 output: html_document
 ---
