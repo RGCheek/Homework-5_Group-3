@@ -1,0 +1,13 @@
+---
+title: "Homework5"
+author: "Aeriel Belk"
+date: "11/5/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Homework 5
+R-markdown to complete homework
