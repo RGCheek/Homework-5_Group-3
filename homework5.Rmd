@@ -24,7 +24,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r libraries, message=FALSE, warning=FALSE}
 library(readr)
-
+library(dplyr)
+library(sf)
+library(tigris)
+library(tidyr)
+library(ggplot2)
+library(broom)
+library(purrr)
+library(knitr)
+library(ggthemes)
+library(forcats)
 ```
 
 
@@ -36,6 +45,27 @@ homicides <- read_csv('data/homicide-data.csv')
 ```
 
 
+```{r}
+##Select for Dnever
+denver <- homicides %>% 
+  subset(city == "Denver") 
+
+##Block groups 
+denver_block <- block_groups(state ="CO", cb=TRUE, class= "sf")
+
+##Change coordinates to sf object
+denver_homicides <- st_as_sf(denver, coords= c("lat", "lon")) %>% 
+  st_set_crs(4326)
+
+ggplot() + 
+  geom_sf(data = denver_block, color = "lightgray") + 
+  geom_sf(data = denver_homicides, aes(color = victim_race))
+  scale_color_viridis(name = "Month") 
+
+
+
+
+```
 
 
 
