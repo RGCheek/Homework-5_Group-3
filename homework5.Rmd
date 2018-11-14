@@ -27,10 +27,10 @@ library(readr)
 library(dplyr)
 library(sf)
 library(tigris)
+library(acs)
 library(tidyr)
+library(scales)
 library(ggplot2)
-library(broom)
-library(purrr)
 library(knitr)
 library(ggthemes)
 library(forcats)
@@ -45,24 +45,36 @@ homicides <- read_csv('data/homicide-data.csv')
 ```
 
 
-```{r}
-##Select for Dnever
+```{r, echo=TRUE}
+## Question 3 
+##Select for Denvver and convert to just solved or unsolved
 denver <- homicides %>% 
-  subset(city == "Denver") 
+  subset(city == "Denver") %>% 
+  mutate(disposition = recode(disposition, 
+                              "Closed without arrest" = 'Unsolved',
+                              "Open/No arrest"= 'Unsolved',
+                              "Closed by arrest" = 'Solved'))
 
-##Block groups 
-denver_block <- block_groups(state ="CO", cb=TRUE, class= "sf")
 
-##Change coordinates to sf object
-denver_homicides <- st_as_sf(denver, coords= c("lat", "lon")) %>% 
-  st_set_crs(4326)
+##Create sub-city layer by census blocks
+api.key.install(key="a22c251a387f5312b9e5c2e5ad21494088e984f6") ##not sure if I need an api for this
+denver_map <- blocks(state = "CO", county = "Denver County", class= "sf")
 
+##Change coordinates to sf object nad lump together the top three victim_race
+denver_homicides <- st_as_sf(denver, coords= c("lon", "lat")) %>% 
+  st_set_crs(4269) %>% 
+  mutate(victim_race = forcats::fct_lump(victim_race, n=3))
+
+##Plot map with two facets for Solved and Unsolved disposition, colors for race, and pretty axis
 ggplot() + 
-  geom_sf(data = denver_block, color = "lightgray") + 
-  geom_sf(data = denver_homicides, aes(color = victim_race))
-  scale_color_viridis(name = "Month") 
-
-
+  geom_sf(data = denver_map, color = "lightgray") + 
+  geom_sf(data = denver_homicides, aes(color= victim_race))+
+            facet_grid(~disposition) +
+  ggtitle("Murder Locations in Denver, Colorado")+
+  theme(plot.title = element_text(hjust=0.5))+
+  labs( y= "Latitude", x= "Longitude", color= "Victim Race") +
+    theme(panel.spacing = unit(.5, unit="in")) +
+  theme(axis.text.x = element_text(angle=90))
 
 
 ```
