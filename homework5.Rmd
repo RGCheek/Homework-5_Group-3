@@ -65,7 +65,7 @@ denver_homicides <- st_as_sf(denver, coords= c("lon", "lat")) %>%
   st_set_crs(4269) %>% 
   mutate(victim_race = forcats::fct_lump(victim_race, n=3))
 
-##Plot map with two facets for Solved and Unsolved disposition, colors for race, and pretty axis
+##Plot map with two facets for Solved and Unsolved disposition, colors for race, and pretty axis. Not sure if I can get rid of the background noise 
 ggplot() + 
   geom_sf(data = denver_map, color = "lightgray") + 
   geom_sf(data = denver_homicides, aes(color= victim_race))+
