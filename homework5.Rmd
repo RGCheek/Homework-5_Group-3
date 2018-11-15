@@ -34,6 +34,7 @@ library(ggplot2)
 library(knitr)
 library(ggthemes)
 library(forcats)
+library(lubridate)
 ```
 
 
@@ -49,7 +50,7 @@ colnames(homicides)
 *******************************************************************************
 ## Plot 1
 ### Rebecca
-
+  
 ```{r, echo=TRUE}
 ## Question 3 
 ##Select for Denvver and convert to just solved or unsolved
@@ -59,7 +60,6 @@ denver <- homicides %>%
                               "Closed without arrest" = 'Unsolved',
                               "Open/No arrest"= 'Unsolved',
                               "Closed by arrest" = 'Solved'))
-
 
 ##Create sub-city layer by census blocks
 api.key.install(key="a22c251a387f5312b9e5c2e5ad21494088e984f6") ##not sure if I need an api for this
@@ -92,7 +92,16 @@ ggplot() +
 
 Recreate the graph shown below. It shows monthly homicides in Baltimore, with a reference added for the date of the arrest of Freddie Gray and color used to show colder months (November through April) versus warmer months (May through October). There is a smooth line added to help show seasonal and long-term trends in this data.
 
+```{r plot2}
 
+homicides %>% 
+  filter(city == "Baltimore") %>% 
+  mutate(reported_date = ymd(reported_date),
+         month = month(reported_date, label = TRUE))
+  
+
+
+```
 
 
 
