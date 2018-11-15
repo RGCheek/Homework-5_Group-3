@@ -35,6 +35,7 @@ library(knitr)
 library(ggthemes)
 library(forcats)
 library(lubridate)
+library(tidyr)
 ```
 
 
@@ -95,18 +96,44 @@ Recreate the graph shown below. It shows monthly homicides in Baltimore, with a 
 ```{r plot2}
 
 freddie <- homicides %>% 
-  filter(victim_last == "GREY" & victim_first == "FREDDIE CARLOS")
+  filter(victim_last == "GREY" & victim_first == "FREDDIE CARLOS") %>% 
+  mutate(reported_date = ymd(reported_date),
+         month = month(reported_date, label = TRUE),
+         year = year(reported_date),
+         Date = format(reported_date, "%Y-%m", label = TRUE),
+         Date = ymd(Date, truncated = 1)) %>% 
+  group_by(Date) %>% 
+  count()
 
 homicides %>% 
   filter(city == "Baltimore") %>% 
   mutate(reported_date = ymd(reported_date),
          month = month(reported_date, label = TRUE),
          year = year(reported_date),
+         Date = format(reported_date, "%Y-%m", label = TRUE),
+         Date = ymd(Date, truncated = 1),
          Summer = month %in% "May" | month %in% "Jun" | month %in% "Jul" |
-           month %in% "Aug" | month %in% "Sep" | month %in% "Oct",
-         Winter = Summer == FALSE)
-
-  
+                  month %in% "Aug" | month %in% "Sep" | month %in% "Oct",
+         Winter = Summer == FALSE,
+         Summer = ifelse(Summer == TRUE, "Summer", ""),
+         Winter = ifelse(Winter == TRUE, "Winter", "")) %>% 
+  unite(season, Summer, Winter, sep = "") %>% 
+  group_by(Date, season) %>% 
+  count() %>% 
+  ungroup() %>% 
+  ggplot(aes(x = Date, y = n)) +
+  geom_bar(aes(fill = season), stat = "identity") +
+  geom_smooth(method = loess, se = FALSE) +
+  geom_vline(data = freddie, aes(xintercept = Date), 
+             color = "red", linetype = "dashed") +
+  geom_text(data = freddie, label = "Arrest of \n Freddie Gray", 
+            color = "white", vjust = -6.5, hjust = 1.1) +
+  scale_fill_manual(values = c("Winter" = "darkslategray1", "Summer" = "lightgray")) +
+  labs(x = "Date", y = "Monthly homicides") +
+  ggtitle("Homicides in Baltimore, MD") +
+  theme_dark() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom") 
 
 
 ```
