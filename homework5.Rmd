@@ -52,7 +52,7 @@ colnames(homicides)
 ## Plot 1
 ### Rebecca
   
-```{r, echo=TRUE}
+```{r}
 ## Question 3 
 ##Select for Denvver and convert to just solved or unsolved
 denver <- homicides %>% 
@@ -81,9 +81,9 @@ ggplot() +
   labs( y= "Latitude", x= "Longitude", color= "Victim Race") +
     theme(panel.spacing = unit(.5, unit="in")) +
   theme(axis.text.x = element_text(angle=90))
-
-
 ```
+
+
 
 
 
@@ -96,11 +96,9 @@ Recreate the graph shown below. It shows monthly homicides in Baltimore, with a 
 
 
 I AM SO CLOSE!!
-I just need to:
-1) make the geom_smooth right - it's too smooth right now. Any ideas?
-2) Get the plot to print in the right dimensions when we knit
+I just need to make the geom_smooth right - it's too smooth right now. Any ideas?
 
-```{r plot2, fig.height=4, fig.width=8}
+```{r plot2, fig.height=3, fig.width=9}
 
 freddie <- homicides %>% 
   filter(victim_last == "GREY" & victim_first == "FREDDIE CARLOS") %>% 
@@ -132,9 +130,9 @@ homicides %>%
   geom_bar(aes(fill = season), stat = "identity") +
   geom_smooth(method = loess, se = FALSE) +
   geom_vline(data = freddie, aes(xintercept = Date), 
-             color = "red", linetype = "dashed") +
+             color = "red", linetype = "dashed", size = 1) +
   geom_text(data = freddie, label = "Arrest of \n Freddie Gray", 
-            color = "white", vjust = -4.5, hjust = 1.1) +
+            color = "white", vjust = -3.7, hjust = 1.1) +
   scale_fill_manual(values = c("Winter" = "darkslategray1", "Summer" = "lightgray")) +
   labs(x = "Date", y = "Monthly homicides") +
   ggtitle("Homicides in Baltimore, MD") +
