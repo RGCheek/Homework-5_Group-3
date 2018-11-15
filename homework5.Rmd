@@ -94,10 +94,18 @@ Recreate the graph shown below. It shows monthly homicides in Baltimore, with a 
 
 ```{r plot2}
 
+freddie <- homicides %>% 
+  filter(victim_last == "GREY" & victim_first == "FREDDIE CARLOS")
+
 homicides %>% 
   filter(city == "Baltimore") %>% 
   mutate(reported_date = ymd(reported_date),
-         month = month(reported_date, label = TRUE))
+         month = month(reported_date, label = TRUE),
+         year = year(reported_date),
+         Summer = month %in% "May" | month %in% "Jun" | month %in% "Jul" |
+           month %in% "Aug" | month %in% "Sep" | month %in% "Oct",
+         Winter = Summer == FALSE)
+
   
 
 
