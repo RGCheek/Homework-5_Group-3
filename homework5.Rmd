@@ -33,6 +33,8 @@ library(readr)
 ```{r data}
 homicides <- read_csv('data/homicide-data.csv')
 
+colnames(homicides)
+
 ```
 
 
