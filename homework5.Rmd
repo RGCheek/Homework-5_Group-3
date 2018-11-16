@@ -128,7 +128,7 @@ homicides %>%
              color = "red", linetype = "dashed", size = 1) +
   geom_text(data = freddie, label = "Arrest of \n Freddie Gray", 
             color = "white", vjust = -3.7, hjust = 1.1) +
-  scale_fill_manual(values = c("Winter" = "darkslategray1", "Summer" = "lightgray")) +
+  scale_fill_manual(values = c("Winter" = "lightblue3", "Summer" = "lightgray")) +
   labs(x = "Date", y = "Monthly homicides") +
   ggtitle("Homicides in Baltimore, MD") +
   theme_dark() +
