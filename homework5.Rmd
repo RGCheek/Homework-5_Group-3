@@ -93,11 +93,6 @@ ggplot() +
 
 Recreate the graph shown below. It shows monthly homicides in Baltimore, with a reference added for the date of the arrest of Freddie Gray and color used to show colder months (November through April) versus warmer months (May through October). There is a smooth line added to help show seasonal and long-term trends in this data.
 
-
-
-I AM SO CLOSE!!
-I just need to make the geom_smooth right - it's too smooth right now. Any ideas?
-
 ```{r plot2, fig.height=3, fig.width=9}
 
 freddie <- homicides %>% 
@@ -128,7 +123,7 @@ homicides %>%
   ungroup() %>% 
   ggplot(aes(x = Date, y = n)) +
   geom_bar(aes(fill = season), stat = "identity") +
-  geom_smooth(method = loess, se = FALSE) +
+  geom_smooth(se = FALSE, n = 200, span = 0.1) +
   geom_vline(data = freddie, aes(xintercept = Date), 
              color = "red", linetype = "dashed", size = 1) +
   geom_text(data = freddie, label = "Arrest of \n Freddie Gray", 
