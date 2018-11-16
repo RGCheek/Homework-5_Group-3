@@ -155,6 +155,26 @@ homicides %>%
 ## Plot 3
 ### Grant
 
+```{r code plot 3}
+homicides2 <- homicides %>%
+  filter(city == "Chicago" | city == "Denver") %>% 
+  mutate(reported_date = ymd(reported_date)) %>% 
+  separate(reported_date, c("year", "month", "day", sep = "-")) %>% 
+  mutate(day = 15) %>% 
+  unite(date, c(day, month, year), sep = "-", remove = FALSE) %>% 
+  mutate(date = as.Date(dmy(date))) %>% 
+  select(victim_age, victim_race, victim_sex, city, date) %>% 
+  group_by(city, date) %>% 
+  count()
 
-
+class(homicides2$date)
+chic_vs_denplot <- homicides2 %>% 
+  ggplot(aes(x = date, y = n))+
+  geom_col()+
+  facet_grid(city ~ .)+
+  theme_few()+
+  labs(x = "Date", y = "Monthly Homicides", title = "Chicago vs. Denver Homicides")+
+  geom_smooth(size = 1, weight = 0.5, color = "Red")
+chic_vs_denplot
+```
 
