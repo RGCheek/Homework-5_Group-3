@@ -1,24 +1,13 @@
 ---
 title: "Homework5"
 author: "Aeriel, Rebecca, and Grant"
-date: "11/5/2018"
-output: html_document
+date: "11/16/2018"
+output: word_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-## Questions 
-
-1. Pick one city in the data (DENVER!!!). Create a map showing the locations of the homicides in that city, using the sf framework discussed in class. Use tigris to download boundaries for some sub-city geography (e.g., tracts, block groups, county subdivisions) to show as a layer underneath the points showing homicides. Use different facets for solved versus unsolved homicides and different colors to show the three race groups with the highest number of homicides for that city (you may find the fct_lump function from forcats useful for this).
-        ####Rebecca Would like to do this one##### 
-
-2. Recreate the graph shown below. It shows monthly homicides in Baltimore, with a reference added for the date of the arrest of Freddie Gray and color used to show colder months (November through April) versus warmer months (May through October). There is a smooth line added to help show seasonal and long-term trends in this data.
-  ** Aeriel will do this **
-
-3. Create one more plot using this data. Work with your group to create a plot that follows the principles of good plotting and that you think illustrates something interesting in the data. Write a paragraph explaining what the plot is showing and why you find it interesting.
-       ####Grant Will Do this####
 *******************************************************************************
 ## Libraries
 
@@ -36,12 +25,13 @@ library(ggthemes)
 library(forcats)
 library(lubridate)
 library(tidyr)
+library(knitr)
 ```
 
 
 ## Load Data
 
-```{r data}
+```{r data, message=FALSE, warning=FALSE, results='hide'}
 homicides <- read_csv('data/homicide-data.csv')
 
 colnames(homicides)
@@ -50,10 +40,13 @@ colnames(homicides)
 
 *******************************************************************************
 ## Plot 1
-### Rebecca
+### Rebecca  
   
-```{r}
-## Question 3 
+Pick one city in the data (DENVER!!!). Create a map showing the locations of the homicides in that city, using the sf framework discussed in class. Use tigris to download boundaries for some sub-city geography (e.g., tracts, block groups, county subdivisions) to show as a layer underneath the points showing homicides. Use different facets for solved versus unsolved homicides and different colors to show the three race groups with the highest number of homicides for that city (you may find the fct_lump function from forcats useful for this).  
+  
+  
+```{r api, message=FALSE, warning=FALSE, results='hide'}
+## Question 1
 ##Select for Denvver and convert to just solved or unsolved
 denver <- homicides %>% 
   subset(city == "Denver") %>% 
@@ -66,7 +59,9 @@ denver <- homicides %>%
 api.key.install(key="a22c251a387f5312b9e5c2e5ad21494088e984f6") ##not sure if I need an api for this
 denver_map <- blocks(state = "CO", county = "Denver County", class= "sf")
 
-##Change coordinates to sf object nad lump together the top three victim_race
+```
+```{r map, fig.width=7, fig.height=3, fig.align='center'}
+##Change coordinates to sf object and lump together the top three victim_race
 denver_homicides <- st_as_sf(denver, coords= c("lon", "lat")) %>% 
   st_set_crs(4269) %>% 
   mutate(victim_race = forcats::fct_lump(victim_race, n=3))
@@ -82,18 +77,16 @@ ggplot() +
     theme(panel.spacing = unit(.5, unit="in")) +
   theme(axis.text.x = element_text(angle=90))
 ```
-
-
-
-
-
+  
+  
 *******************************************************************************
 ## Plot 2
 ### Aeriel
-
+  
 Recreate the graph shown below. It shows monthly homicides in Baltimore, with a reference added for the date of the arrest of Freddie Gray and color used to show colder months (November through April) versus warmer months (May through October). There is a smooth line added to help show seasonal and long-term trends in this data.
-
-```{r plot2, fig.height=3, fig.width=9}
+  
+  
+```{r plot2, fig.height=4, fig.width=8.5, fig.align='center'}
 
 freddie <- homicides %>% 
   filter(victim_last == "GREY" & victim_first == "FREDDIE CARLOS") %>% 
@@ -128,29 +121,23 @@ homicides %>%
              color = "red", linetype = "dashed", size = 1) +
   geom_text(data = freddie, label = "Arrest of \n Freddie Gray", 
             color = "white", vjust = -3.7, hjust = 1.1) +
-  scale_fill_manual(values = c("Winter" = "lightblue3", "Summer" = "lightgray")) +
+  scale_fill_manual(values = c("Winter" = "lightblue3", 
+                               "Summer" = "lightgray")) +
   labs(x = "Date", y = "Monthly homicides") +
   ggtitle("Homicides in Baltimore, MD") +
   theme_dark() +
   theme(legend.title = element_blank(),
         legend.position = "bottom") 
-
-
 ```
-
-
-
-
-
-
-
-
-
+  
 *******************************************************************************
 ## Plot 3
-### Grant
-
-```{r code plot 3}
+### Grant  
+  
+3. Create one more plot using this data. Work with your group to create a plot that follows the principles of good plotting and that you think illustrates something interesting in the data. Write a paragraph explaining what the plot is showing and why you find it interesting.  
+  
+  
+```{r code plot3, warnings=FALSE, fig.align='center'}
 homicides2 <- homicides %>%
   filter(city == "Chicago" | city == "Denver") %>% 
   mutate(reported_date = ymd(reported_date)) %>% 
@@ -168,7 +155,8 @@ chic_vs_denplot <- homicides2 %>%
   geom_col()+
   facet_grid(city ~ .)+
   theme_few()+
-  labs(x = "Date", y = "Monthly Homicides", title = "Chicago vs. Denver Homicides")+
+  labs(x = "Date", y = "Monthly Homicides", 
+       title = "Chicago vs. Denver Homicides")+
   geom_smooth(size = 1, weight = 0.5, color = "Red")
 chic_vs_denplot
 ```
